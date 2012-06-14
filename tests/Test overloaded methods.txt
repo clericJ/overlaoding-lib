@@ -1,0 +1,49 @@
+The ``overloading`` module
+======================
+
+Using ``overloading``
+-------------------
+
+    >>> import overloading
+
+    >>> class MyClass(overloading.Overloadable):
+    ...     @overloading.overload(int, list)
+    ...     def method(self, x, y):
+    ...         return 'int, list'
+    ...
+    ...     @overloading.overload(dict)
+    ...     def method(self, x):
+    ...         return 'dict'
+    ...
+    ...     @overloading.overload(bool)
+    ...     def method(self, x):
+    ...         return 'bool'
+
+    >>> inst = MyClass()
+
+Now use it:
+
+    >>> inst.method(False) == 'bool'
+    True
+    
+    >>> inst.method(0, []) == 'int, list'
+    True
+    
+    >>> inst.method({}) == 'dict'
+    True
+    
+    >>> inst.method(0) #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+        ...
+    CannotResolve:
+
+    >>> inst.method([]) #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+        ...
+    CannotResolve:
+    
+    >>> inst.method(0, []) == 'int, list'
+    True
+    
+    >>> inst.method({}) == 'dict'
+    True

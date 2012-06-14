@@ -1,0 +1,49 @@
+The ``overloading`` module
+======================
+
+Using ``overloading``
+-------------------
+
+    >>> import overloading
+
+    >>> @overloading.overload(object)
+    ... def test1(x):
+    ...     return "object"
+
+    >>> @overloading.overload(object)
+    ... def test2(x):
+    ...     return "object"
+
+    >>> def tf1():
+    ...     @overloading.when(test1, (int,))
+    ...     def test1_int(x):
+    ...         return "int"
+
+    >>> def tf2():
+    ...     @overloading.when(test1, (int,))
+    ...     def test2(x):
+    ...         return "int"
+
+Now use it:
+
+    >>> test1(0) == "object"
+    True
+
+    >>> tf1()  #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+        ...
+    NameError:
+
+    >>> test1(0) == "object"
+    True
+
+    >>> test2(0) == "object"
+    True
+
+    >>> tf1()  #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+        ...
+    NameError:
+
+    >>> test2(0) == "object"
+    True

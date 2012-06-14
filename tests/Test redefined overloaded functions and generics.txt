@@ -1,0 +1,42 @@
+﻿The ``overloading`` module
+======================
+
+Using ``overloading``
+-------------------
+
+    >>> import overloading
+
+    >>> def func1(x):
+    ...     return "generic"
+
+    >>> @overloading.overload(int, float)
+    ... def func1(x,y):
+    ...     return "int float"
+
+    >>> def func1(x):
+    ...     return "redefined generic"
+
+    >>> @overloading.overload(int, float)
+    ... def func1(x,y):
+    ...     return "redefined int float"
+
+    >>> @overloading.overload(int, float)
+    ... def func2(x,y):
+    ...     return "int float"
+
+    >>> @overloading.overload(int, float)
+    ... def func2(x,y):
+    ...     return "func2 redefined int float"
+
+Now use it:
+
+    >>> func1(0,0.0) == "redefined int float"
+    True
+    >>> func1(0)     == "redefined generic"
+    True
+    >>> func2(0,0.0) == "func2 redefined int float"
+    True
+    >>> func2(0)  #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+        ...
+    CannotResolve:

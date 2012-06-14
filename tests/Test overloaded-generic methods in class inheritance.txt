@@ -1,0 +1,36 @@
+The ``overloading`` module
+======================
+
+Using ``overloading``
+-------------------
+
+    >>> import overloading
+
+    >>> class Base(object):
+    ...     def method(self, x):
+    ...         return 'generic'
+    ...
+    >>> class Divired(Base, overloading.Overloadable):
+    ...     @overloading.overload(int)
+    ...     def method(self, x):
+    ...         return 'int'
+    ...
+    ...     @overloading.overload(float)
+    ...     def method(self, x):
+    ...         return 'float'
+
+    >>> divired = Divired()
+    
+Now use it:
+    
+    >>> divired.method(0) == 'int'
+    True
+    
+    >>> divired.method(0.0) == 'float'
+    True
+    
+    >>> divired.method(0j) == 'generic'
+    True
+
+    >>> divired.method("") == 'generic'
+    True

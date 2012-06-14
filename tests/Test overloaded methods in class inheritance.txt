@@ -1,0 +1,43 @@
+The ``overloading`` module
+======================
+
+Using ``overloading``
+-------------------
+
+    >>> import overloading
+
+    >>> class Base(overloading.Overloadable):
+    ...     @overloading.overload(str)
+    ...     def method(self, x):
+    ...         return 'str'
+    ...
+    >>> class Divired(Base):
+    ...     @overloading.overload(int)
+    ...     def method(self, x):
+    ...         return 'int'
+    ...
+    ...     @overloading.overload(float)
+    ...     def method(self, x):
+    ...         return 'float'
+
+Now use it:
+    
+    >>> divired = Divired()
+    >>> divired.method(0) == 'int'
+    True
+    
+    >>> divired.method(0.0) == 'float'
+    True
+
+    >>> divired.method("") == 'str'
+    True
+    
+    >>> divired.method(0j) #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+        ...
+    CannotResolve:
+
+    >>> divired.method([]) #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+        ...
+    CannotResolve:

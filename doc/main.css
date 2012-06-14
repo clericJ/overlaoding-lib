@@ -1,0 +1,88 @@
+﻿body
+{
+    color:        black;
+    background:   #F7F7F7;
+}
+
+h3
+{
+    text-align:   center;
+    display:      block;
+    background:   #C0C0C0;
+    color:        white;
+}
+
+pre code[class]:after
+{
+    content:      attr(class) ' code';
+    display:      block;
+    text-align:   right;
+    font-size:    smaller;
+    color:        white;
+    background:   #E5E5E5;
+    border-top:   solid 1px;
+    padding-top:  0.5em;
+}
+
+pre code
+{
+    display:      block;
+    background:   #F3F3F3;
+}
+
+pre code,
+.ruby .subst {
+    color: black;
+}
+.keyword {
+    color: #0000ea;
+}
+.string {
+    color: #86464d;
+}
+
+.function .title,
+.class .title,
+.tag .attribute .value,
+.css .rules .value {
+    color: #0080ff;
+}
+
+.built_in,
+.python .decorator{
+    color: #800080;
+}
+.preprocessor,
+.ruby .symbol,
+.sql .aggregate,
+.django .template_tag,
+.django .variable,
+.smalltalk .class {
+  color: #800;
+}
+
+.comment,
+.java .annotation,
+.template_comment {
+  color: #888;
+}
+
+.number,
+.regexp,
+.javascript .literal,
+.smalltalk .symbol,
+.smalltalk .char {
+  color: #808080;
+}
+
+.javadoc,
+.ruby .string,
+.django .filter .argument,
+.smalltalk .localvars,
+.smalltalk .array {
+  color: #88F;
+}
+
+.number {
+    color: #0080ff;
+}

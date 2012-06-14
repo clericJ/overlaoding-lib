@@ -1,0 +1,92 @@
+﻿The ``overloading`` module
+======================
+
+Using ``overloading``
+-------------------
+
+    >>> import overloading
+
+    >>> class T1(object):pass
+    >>> class T2(T1):pass
+    >>> class T3(T2):pass
+
+    >>> class A(overloading.Overloadable):
+    ...
+    ...    @overloading.overload(T1, T3)
+    ...    def m(self, x,y):
+    ...        return "T1", "T3"
+    ...
+    ...    @overloading.overload(T3, T1)
+    ...    def m(self, x,y):
+    ...        return "T3", "T1"
+
+    >>> class B(A):
+    ...
+    ...    @overloading.overload(T1, T1)
+    ...    def m(self, x,y):
+    ...        return "T1", "T1"
+    ...
+    ...    @overloading.overload(T2, T3)
+    ...    def m(self, x,y):
+    ...        return "T2", "T3"
+
+    >>> class X(overloading.Overloadable):
+    ...    @overloading.overload(unicode, object)
+    ...    def m(self, x, y):
+    ...        return "unicode", "unicode"
+
+    >>> class Y(X):
+    ...    @overloading.overload(object, unicode)
+    ...    def m(self, x, y):
+    ...        return "object", "unicode"
+
+    >>> a=A()
+    >>> b=B()
+    >>> x=X()
+    >>> y=Y()
+
+Now use it:
+
+    >>> a.m(T1(), T1()) #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+        ...
+    CannotResolve:
+
+    >>> a.m(T2(), T1()) #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+        ...
+    CannotResolve:
+
+    >>> a.m(T3(), T1()) == ('T3', 'T1')
+    True
+
+    >>> b.m(T1(), T1()) == ('T1', 'T1')
+    True
+    >>> b.m(T3(), T2()) == ('T3', 'T1')
+    True
+    >>> b.m(T2(), T1()) == ('T1', 'T1')
+    True
+    >>> b.m(T3(), T3()) == ('T2', 'T3')
+    True
+    >>> b.m(T1(), T3()) == ('T1', 'T3')
+    True
+    >>> b.m(T2(), T3()) == ('T2', 'T3')
+    True
+
+    >>> a.m(T1(), T1()) #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+        ...
+    CannotResolve:
+
+    >>> a.m(T3(), T3())  #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+        ...
+    AmbiguousFunctions:
+
+
+    >>> y.m(0,u"") == ('object', 'unicode')
+    True
+    >>> y.m(u"",u"")   #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+        ...
+    AmbiguousFunctions:

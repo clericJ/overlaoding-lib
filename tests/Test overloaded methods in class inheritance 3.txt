@@ -1,0 +1,81 @@
+The ``overloading`` module
+======================
+
+Using ``overloading``
+-------------------
+
+    >>> import overloading
+    >>> overloading.__disablewarnings__ = True
+
+    >>> class T(object):
+    ...     def m(self, x):
+    ...         return self.__class__.__name__, "generic"
+
+
+    >>> class A(T, overloading.Overloadable):
+    ...     @overloading.overload(str)
+    ...     def m(self, x):
+    ...         return self.__class__.__name__, "str"
+
+
+    >>> class B(A):
+    ...     @overloading.overload(bool)
+    ...     def m(self, x):
+    ...         return self.__class__.__name__, "bool"
+    ...
+    ...     @overloading.overload(tuple)
+    ...     def m(self, x):
+    ...         return self.__class__.__name__, "tuple", "defined in B"
+
+
+    >>> class C(B):
+    ...     @overloading.overload(list)
+    ...     def m(self, x):
+    ...         return self.__class__.__name__, "list"
+    ...
+    ...     # must be print warning message
+    ...     @overloading.overload(tuple)
+    ...     def m(self, x):
+    ...         return self.__class__.__name__, "tuple", "defined in C"
+
+
+    >>> class D(C):
+    ...     @overloading.overload(float)
+    ...     def m(self, x):
+    ...         print self.__class__.__name__, "float"
+
+    >>> class E(D):
+    ...     pass
+
+    >>> b=B()
+    >>> a=A()
+    >>> c=C()
+    >>> d=D()
+    >>> e=E()
+
+Now use it:
+
+    >>> a.m("")       == ('A', 'str')
+    True
+    >>> c.m(False)    == ('C', 'bool')
+    True
+    >>> c.m("")       == ('C', 'str')
+    True
+    >>> c.m(False)    == ('C', 'bool')
+    True
+    >>> c.m([])       == ('C', 'list')
+    True
+    >>> e.m(False)    == ('E', 'bool')
+    True
+    >>> e.m("")       == ('E', 'str')
+    True
+    >>> e.m(False)    == ('E', 'bool')
+    True
+    >>> e.m([])       == ('E', 'list')
+    True
+    >>> e.m({})       == ('E', 'generic')
+    True
+    >>> b.m(tuple())  == ('B', 'tuple', 'defined in B')
+    True
+    >>> e.m(tuple())  == ('E', 'tuple', 'defined in C')
+    True

@@ -1,0 +1,74 @@
+The ``overloading`` module
+======================
+
+Using ``overloading``
+-------------------
+
+    >>> import overloading
+    >>> overloading.__disablewarnings__ = False
+
+Now use it:
+    
+    >>> class WClass1(overloading.Overloadable):
+    ...
+    ...     # never called
+    ...     @overloading.overload(float)
+    ...     def method(self, x):
+    ...         return "float"
+    ...
+    ...     @overloading.when(method, (unicode,))
+    ...     def method(self, x):
+    ...         return "unicode"
+    ... 
+    ...     # must be print warning message
+    ...     @overloading.overload(float)
+    ...     def method(self, x):
+    ...         return "redefined float"
+    
+    >>> class Base1(object):
+    ...
+    ...     # never called
+    ...     def method(self, x):
+    ...         return "generic"
+    
+    >>> class WClass2(Base1, overloading.Overloadable):
+    ...
+    ...     # warning "Generic function method overridden"
+    ...     def method(self, x):
+    ...         return "redefined generic"
+    ... 
+    ...     @overloading.overload(float)
+    ...     def method(self, x):
+    ...         return "float"
+    
+    >>> class WClass3(overloading.Overloadable):
+    ...
+    ...     @overloading.overload(basestring)
+    ...     def method(self, x):
+    ...         pass
+    ... 
+    ...     @overloading.overload(str)
+    ...     def method(self, x):
+    ...         pass
+    
+    >>> class WClass4(WClass1):
+    ...
+    ...     # must be print warning message
+    ...     @overloading.overload(unicode)
+    ...     def method(self, x):
+    ...         return "redefined unicode"
+    ... 
+    
+    >>> test1 = WClass1()
+    >>> test2 = WClass2()
+    >>> test3 = WClass3()
+    >>> test4 = WClass4()
+    
+    >>> test1.method(0.0) == 'redefined float'
+    True
+
+    >>> test2.method([]) == 'redefined generic'
+    True
+
+    >>> test4.method(u"") == 'redefined unicode'
+    True

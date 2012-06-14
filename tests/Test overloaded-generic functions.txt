@@ -1,0 +1,59 @@
+﻿The ``overloading`` module
+======================
+
+Using ``overloading``
+-------------------
+
+    >>> import overloading
+
+    >>> def processing(x):
+    ...     return 'generic'
+
+    >>> @overloading.overload(basestring)
+    ... def processing(x):
+    ...     return 'basestring'
+
+    >>> @overloading.overload(list)
+    ... def processing(x):
+    ...     return 'list'
+
+    >>> @overloading.overload(int)
+    ... def processing(x):
+    ...     return 'int'
+
+    >>> @overloading.overload(float)
+    ... def processing(x):
+    ...     return 'float'
+
+
+Now use it:
+
+    >>> processing(0) == 'int'
+    True
+
+    >>> processing(0.0) == 'float'
+    True
+
+    >>> processing("") == 'basestring'
+    True
+
+    >>> processing(u"") == 'basestring'
+    True
+    
+    >>> processing([]) == 'list'
+    True
+
+    >>> processing({}) == 'generic'
+    True
+
+    >>> processing(list) == 'generic'
+    True
+
+    >>> processing(0j) == 'generic'
+    True
+
+    >>> processing("") == 'basestring'
+    True
+
+    >>> processing(u"") == 'basestring'
+    True

@@ -1,0 +1,71 @@
+The ``overloading`` module
+======================
+
+Using ``overloading``
+-------------------
+
+    >>> import overloading
+
+    >>> class A(object):pass
+    >>> class B(A):pass
+    >>> class C(B):pass
+
+    >>> class W(object):pass
+    >>> class X(W):pass
+    >>> class Y(X):pass
+    >>> class Z(Y):pass
+
+    >>> class T(B, Y):pass
+
+    >>> @overloading.overload(A)
+    ... def f1(x):
+    ...     return 'A'
+
+    >>> @overloading.overload(X)
+    ... def f1(x):
+    ...     return 'X'
+
+    >>> @overloading.overload(W)
+    ... def f2(x):
+    ...     return "W"
+
+    >>> @overloading.overload(A)
+    ... def f2(x):
+    ...     return "A"
+
+    >>> @overloading.overload(T, A)
+    ... def f3(x,y):
+    ...     return "T A"
+
+    >>> @overloading.overload(T, W)
+    ... def f3(x,y):
+    ...     return "T W"
+
+Now use it:
+
+    >>> f1(T()) #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+        ...
+    AmbiguousFunctions:
+
+    >>> f1(W()) #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+        ...
+    CannotResolve:
+
+    >>> f1(Z())       == "X"
+    True
+    >>> f1(C())       == "A"
+    True
+    >>> f2(T())       == "A"
+    True
+    >>> f2(C())       == "A"
+    True
+    >>> f2(Z())       == "W"
+    True
+    >>> f3(T(),T())   == "T A"
+    True
+    >>> f3(T(),C())   == "T A"
+    True
+    >>> f3(T(),Z())   == "T W"
+    True

@@ -1,0 +1,56 @@
+﻿The ``overloading`` module
+======================
+
+Using ``overloading``
+-------------------
+... 
+    >>> import overloading
+
+    >>> class A(overloading.Overloadable):
+    ...     # never called
+    ...     @overloading.overload(float)
+    ...     def method(self, x):
+    ...         return "float"
+    ...
+    ...     @overloading.when(method, (unicode,))
+    ...     def method(self, x):
+    ...         return "unicode"
+    ...
+    ...     @overloading.overload(float)
+    ...     def method(self, x):
+    ...         return "redefined float"
+
+    >>> class Base1(object):
+    ... 
+    ...     def method(self, x):
+    ...         return "generic"
+
+    >>> class B(Base1, overloading.Overloadable):
+    ...
+    ...     # warning "Generic function method overridden"
+    ...     def method(self, x):
+    ...         return "redefined generic"
+    ...
+    ...     @overloading.overload(float)
+    ...     def method(self, x):
+    ...         return "float"
+
+    >>> class C(A):
+    ...
+    ...     @overloading.overload(unicode)
+    ...     def method(self, x):
+    ...         return "redefined unicode"
+
+
+    >>> test1 = A()
+    >>> test2 = B()
+    >>> test3 = C()
+
+Now use it:
+
+    >>> test1.method(0.0) == "redefined float"
+    True
+    >>> test2.method([])  == "redefined generic"
+    True
+    >>> test3.method(u"") == "redefined unicode"
+    True

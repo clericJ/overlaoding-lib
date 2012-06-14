@@ -1,0 +1,92 @@
+The ``overloading`` module
+======================
+
+Using ``overloading``
+-------------------
+
+    >>> import overloading
+    >>> overloading.__disablewarnings__ = True
+
+    >>> class O(object):
+    ...    pass
+
+    >>> class A(object):
+    ...     def method(self, x):
+    ...         return "generic"
+
+    >>> class B(A, overloading.Overloadable):
+    ...     @overloading.overload(complex)
+    ...     def method(self, x):
+    ...         return "complex"
+    ...
+    ...     @overloading.overload(float)
+    ...     def method(self, x):
+    ...         return "base - float"
+
+    >>> class C(B, overloading.Overloadable):
+    ...     @overloading.overload(float)
+    ...     def method(self, x):
+    ...         r = super(C,self).method(x)
+    ...         return "float", r
+    ...
+    ...     @overloading.when(method, (unicode,))
+    ...     def method(self, x):
+    ...         return "unicode"
+    ... 
+    ...     ### never called, must be print warning message
+    ...     ##@overloading.overload(float)
+    ...     ##def method(self, x):
+    ...     ##    return "redefined - float"
+
+    >>> class D(C, O, overloading.Overloadable):
+    ...     @overloading.overload(int)
+    ...     def method(self, x):
+    ...         return "int"
+    ... 
+    ...     @overloading.overload(str)
+    ...     def method(self, x):
+    ...         return "str"
+    ... 
+    ...     @overloading.when(method, (A,))
+    ...     def method_A(self, x):
+    ...         return "A"
+    ...
+    ...     @overloading.overload(str, unicode)
+    ...     def method(self, x, y):
+    ...         r = super(D,self).method(y)
+    ...         return "str", r
+
+    
+    >>> divired=D()    
+    
+Now use it:
+
+    >>> divired.method(1) == 'int'
+    True
+    
+    >>> divired.method('') == 'str'
+    True
+    
+    >>> divired.method(1.0) == ('float', 'base - float')
+    True
+    
+    >>> divired.method(1j) == 'complex'
+    True
+    
+    >>> divired.method(u'') == 'unicode'
+    True
+    
+    >>> divired.method(O()) == 'generic'
+    True
+    
+    >>> divired.method(1j) == 'complex'
+    True
+    
+    >>> divired.method(A()) == 'A'
+    True
+    
+    >>> divired.method_A(A()) == 'A'
+    True
+    
+    >>> divired.method('', u'') == ('str', 'unicode')
+    True
